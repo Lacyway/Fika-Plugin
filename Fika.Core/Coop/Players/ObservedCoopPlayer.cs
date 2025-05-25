@@ -69,14 +69,14 @@ namespace Fika.Core.Coop.Players
         public BetterSource VoipEftSource { get; set; }
         internal ObservedState CurrentPlayerState;
 
-        private bool leftStancedDisabled;
-        private FikaHealthBar healthBar = null;
-        private Coroutine waitForStartRoutine;
-        private bool isServer;
-        private VoiceBroadcastTrigger voiceBroadcastTrigger;
-        private GClass1050 soundSettings;
-        private bool voipAssigned;
-        private int frameSkip;
+        private bool _leftStancedDisabled;
+        private FikaHealthBar _healthBar = null;
+        private Coroutine _waitForStartRoutine;
+        private bool _isServer;
+        private VoiceBroadcastTrigger _voiceBroadcastTrigger;
+        private GClass1050 _soundSettings;
+        private bool _voipAssigned;
+        private int _frameSkip;
 
         public ObservedHealthController NetworkHealthController
         {
@@ -145,8 +145,8 @@ namespace Fika.Core.Coop.Players
                 return Mathf.Max(1f, Singleton<BetterAudio>.Instance.ProtagonistHearing + 1f);
             }
         }
-        private GClass896 cullingHandler;
-        private readonly List<ObservedSlotViewHandler> observedSlotViewHandlers = [];
+        private GClass896 _cullingHandler;
+        private readonly List<ObservedSlotViewHandler> _observedSlotViewHandlers = [];
         #endregion
 
         public static async Task<ObservedCoopPlayer> CreateObservedPlayer(GameWorld gameWorld, int playerId, Vector3 position, Quaternion rotation, string layerName,
@@ -195,8 +195,8 @@ namespace Fika.Core.Coop.Players
 
             Traverse observedTraverse = Traverse.Create(player);
             observedTraverse.Field<GClass896>("gclass896_0").Value = new();
-            player.cullingHandler = observedTraverse.Field<GClass896>("gclass896_0").Value;
-            player.cullingHandler.Initialize(player, player.PlayerBones);
+            player._cullingHandler = observedTraverse.Field<GClass896>("gclass896_0").Value;
+            player._cullingHandler.Initialize(player, player.PlayerBones);
             if (FikaBackendUtils.IsHeadless || profile.IsPlayerProfile())
             {
                 player._cullingHandler.Disable();
@@ -220,12 +220,12 @@ namespace Fika.Core.Coop.Players
             if (GClass2762.int_1 == 0)
             {
                 GClass2762.int_1 = 1;
-                player.frameSkip = 1;
+                player._frameSkip = 1;
             }
             else
             {
                 GClass2762.int_1 = 0;
-                player.frameSkip = 0;
+                player._frameSkip = 0;
             }
 
             return player;
