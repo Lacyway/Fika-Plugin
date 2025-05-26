@@ -13,7 +13,6 @@ using Fika.Core.Models;
 using Fika.Core.Networking.Http;
 using Fika.Core.Networking.Websocket;
 using Fika.Core.Patching;
-using Fika.Core.UI;
 using Fika.Core.UI.Models;
 using Fika.Core.UI.Patches;
 using Fika.Core.Utils;
@@ -234,6 +233,9 @@ namespace Fika.Core
             Instance = this;
             _patchManager = new(this, true);
 
+            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+            CheckForSpan();
+
             GetNatPunchServerConfig();
             EnableFikaPatches();
             DisableSPTPatches();
@@ -257,7 +259,28 @@ namespace Fika.Core
                 _patchManager.EnablePatch(new ItemContext_Patch());
             }
 
+            AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
             _ = Task.Run(RunChecks);
+        }
+
+        private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            if (args.Name == "System.Memory")
+            {
+                MessageBoxHelper.Show($"System.Memory has not been installed alongside Fika.\nPlease install it from the release .zip", "FIKA ERROR", MessageBoxHelper.MessageBoxType.OK);
+                Logger.LogError("System.Memory has not been installed alongside Fika.\nPlease install it from the release .zip");
+                Application.Quit();
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// This method verifies that the user has extracted the System.Memory dependency, if not it will be caught in <see cref="CurrentDomain_AssemblyResolve"/>
+        /// </summary>
+        private void CheckForSpan()
+        {
+            Logger.LogInfo($"{typeof(Span<>)} verified and loaded");
         }
 
         private void SetupConfigEventHandlers()
