@@ -1087,7 +1087,7 @@ namespace Fika.Core.Networking
             dataWriter.Reset();
 
             packetProcessor.WriteNetSerializable(dataWriter, ref packet);
-            netClient.FirstPeer.Send(dataWriter, deliveryMethod);
+            netClient.FirstPeer.Send(dataWriter.Span, deliveryMethod);
         }
 
         public void SendVOIPPacket(ref VOIPPacket packet, NetPeer peer = null)
@@ -1105,7 +1105,7 @@ namespace Fika.Core.Networking
         {
             dataWriter.Reset();
             dataWriter.PutBytesWithLength(data.Array, data.Offset, (ushort)data.Count);
-            netClient.FirstPeer.Send(dataWriter, 1, DeliveryMethod.Sequenced);
+            netClient.FirstPeer.Send(dataWriter.Span, 1, DeliveryMethod.Sequenced);
         }
 
         public void SendReusable<T>(T packet, DeliveryMethod deliveryMethod) where T : class, IReusable, new()
@@ -1113,7 +1113,7 @@ namespace Fika.Core.Networking
             dataWriter.Reset();
 
             packetProcessor.Write(dataWriter, packet);
-            netClient.FirstPeer.Send(dataWriter, deliveryMethod);
+            netClient.FirstPeer.Send(dataWriter.Span, deliveryMethod);
 
             packet.Flush();
         }

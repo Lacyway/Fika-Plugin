@@ -12,6 +12,15 @@
     <Configurations>Debug;Release;GoldMaster</Configurations>
     <DefineConstants Condition="'$(Configuration)' == 'GoldMaster|AnyCPU' ">TRACE;GOLDMASTER</DefineConstants>   
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='GoldMaster|AnyCPU'">
+    <DefineConstants>$(DefineConstants);LITENETLIB_SPANS</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>$(DefineConstants);LITENETLIB_SPANS</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>$(DefineConstants);LITENETLIB_SPANS</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Coop\Patches\SPTBugs\**" />
     <EmbeddedResource Remove="Coop\Patches\SPTBugs\**" />
@@ -26,6 +35,7 @@
 
   <ItemGroup>
     <PackageReference Include="BepInEx.Core" Version="5.*" />
+    <PackageReference Include="System.Memory" Version="4.6.3" />
     <PackageReference Include="UnityEngine.Modules" Version="2022.3.43" IncludeAssets="compile" />
   </ItemGroup>
 

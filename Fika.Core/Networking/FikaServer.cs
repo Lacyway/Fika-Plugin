@@ -1266,13 +1266,13 @@ namespace Fika.Core.Networking
                 if (NetServer.ConnectedPeersCount > 1)
                 {
                     packetProcessor.WriteNetSerializable(dataWriter, ref packet);
-                    netServer.SendToAll(dataWriter, deliveryMethod, peerToExclude);
+                    netServer.SendToAll(dataWriter.Span, deliveryMethod, peerToExclude);
                 }
                 return;
             }
 
             packetProcessor.WriteNetSerializable(dataWriter, ref packet);
-            netServer.SendToAll(dataWriter, deliveryMethod);
+            netServer.SendToAll(dataWriter.Span, deliveryMethod);
         }
 
         public void SendReusableToAll<T>(T packet, DeliveryMethod deliveryMethod, NetPeer peerToExlude = null) where T : class, IReusable, new()
@@ -1282,11 +1282,11 @@ namespace Fika.Core.Networking
             packetProcessor.Write(dataWriter, packet);
             if (peerToExlude != null)
             {
-                netServer.SendToAll(dataWriter, deliveryMethod, peerToExlude);
+                netServer.SendToAll(dataWriter.Span, deliveryMethod, peerToExlude);
             }
             else
             {
-                netServer.SendToAll(dataWriter, deliveryMethod);
+                netServer.SendToAll(dataWriter.Span, deliveryMethod);
             }
 
             packet.Flush();
@@ -1297,7 +1297,7 @@ namespace Fika.Core.Networking
             dataWriter.Reset();
 
             packetProcessor.WriteNetSerializable(dataWriter, ref packet);
-            peer.Send(dataWriter, deliveryMethod);
+            peer.Send(dataWriter.Span, deliveryMethod);
         }
 
         public void SendVOIPPacket(ref VOIPPacket packet, NetPeer peer = null)

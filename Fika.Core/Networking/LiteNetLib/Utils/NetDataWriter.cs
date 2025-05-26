@@ -29,6 +29,17 @@ namespace LiteNetLib.Utils
             get => _position;
         }
 
+        /// <summary>
+        /// Returns a new span of the writer
+        /// </summary>
+        public Span<byte> Span
+        {
+            get
+            {
+                return new(Data, 0, Length);
+            }
+        }
+
         public static readonly ThreadLocal<UTF8Encoding> uTF8Encoding = new ThreadLocal<UTF8Encoding>(() => new UTF8Encoding(false, true));
 
         public NetDataWriter() : this(true, InitialSize)
@@ -216,14 +227,15 @@ namespace LiteNetLib.Utils
 
         public void Put(Guid value)
         {
-#if LITENETLIB_SPANS || NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1 || NETCOREAPP3_1 || NET5_0 || NETSTANDARD2_1
+            // Lacyway: Disabled due to mscorlib not supporting constructor in current version of EFT
+/*#if LITENETLIB_SPANS || NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1 || NETCOREAPP3_1 || NET5_0 || NETSTANDARD2_1
             if (_autoResize)
                 ResizeIfNeed(_position + 16);
             value.TryWriteBytes(_data.AsSpan(_position));
             _position += 16;
-#else
+#else*/
             PutBytesWithLength(value.ToByteArray());
-#endif
+/*#endif*/
         }
 
         public void Put(byte[] data, int offset, int length)
