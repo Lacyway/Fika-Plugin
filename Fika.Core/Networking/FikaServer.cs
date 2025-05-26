@@ -504,7 +504,7 @@ namespace Fika.Core.Networking
             if (item.TryGetItemComponent(out SideEffectComponent sideEffectComponent))
             {
 #if DEBUG
-                logger.LogInfo("Setting value to: " + packet.Value + ", original: " + sideEffectComponent.Value);
+                logger.LogInfo($"Setting value to: {packet.Value}, original: {sideEffectComponent.Value}");
 #endif
                 sideEffectComponent.Value = packet.Value;
                 item.RaiseRefreshEvent(false, false);
