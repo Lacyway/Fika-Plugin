@@ -30,9 +30,9 @@ namespace LiteNetLib.Utils
         }
 
         /// <summary>
-        /// Returns a new span of the writer
+        /// Returns a new <see cref="ReadOnlySpan{T}"/> of the writer data
         /// </summary>
-        public Span<byte> Span
+        public ReadOnlySpan<byte> Span
         {
             get
             {
