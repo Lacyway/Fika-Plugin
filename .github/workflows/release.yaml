@@ -1,0 +1,54 @@
+name: Manual Build and Draft Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release Tag (e.g., v1.0.0)'
+        required: true
+      release_name:
+        description: 'Release Title (optional)'
+        required: false
+      release_notes:
+        description: 'Release Notes (optional)'
+        required: false
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build the solution
+        run: dotnet build YourSolution.sln --configuration Release
+
+      - name: Publish the project
+        run: dotnet publish YourProject.csproj --configuration Release --output output/
+
+      - name: Copy loose files
+        run: |
+          mkdir package
+          cp -r output/* package/
+          cp LICENSE.txt package/
+
+      - name: Zip the build and loose files
+        run: zip -r ${{ inputs.release_name }}.zip package
+
+      - name: Create GitHub Release Draft
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.release_tag }}
+          name: ${{ inputs.release_name }}
+          body: ${{ inputs.release_notes }}
+          draft: true
+          files: |
+            ${{ inputs.release_name }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
